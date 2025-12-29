@@ -1,0 +1,10 @@
+# Backend
+/atm-machine/target/
+*.log
+
+# Frontend
+/atm-machine-frontend/node_modules/
+.env
+
+# OS
+.DS_Store
