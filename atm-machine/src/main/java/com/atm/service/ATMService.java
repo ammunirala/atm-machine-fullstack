@@ -1,5 +1,6 @@
 package com.atm.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import com.atm.repository.TransactionRepository;
 @Service
 @Transactional
 public class ATMService {
+
+    private static final double DAILY_LIMIT = 10000.0;
 
     private final AccountRepository accountRepo;
     private final TransactionRepository transactionRepo;
@@ -73,7 +76,7 @@ public class ATMService {
         );
     }
 
-    // ================= WITHDRAW =================
+    // ================= WITHDRAW (FEATURE 2) =================
     public void withdraw(String accNo, double amount) {
 
         if (amount <= 0) {
@@ -86,11 +89,37 @@ public class ATMService {
             throw new ATMException("Account not found");
         }
 
+        // 💰 Balance check
         if (acc.getBalance() < amount) {
             throw new ATMException("Insufficient balance");
         }
 
+        // 🛡️ NULL SAFETY (VERY IMPORTANT)
+        if (acc.getDailyWithdrawn() == null) {
+            acc.setDailyWithdrawn(0.0);
+        }
+
+        LocalDate today = LocalDate.now();
+
+        // 🔁 Reset daily limit if new day
+        if (acc.getLastWithdrawDate() == null
+                || !today.equals(acc.getLastWithdrawDate())) {
+
+            acc.setDailyWithdrawn(0.0);
+            acc.setLastWithdrawDate(today);
+        }
+
+        // 🏦 Daily limit check
+        if (acc.getDailyWithdrawn() + amount > DAILY_LIMIT) {
+            throw new ATMException(
+                    "Daily withdrawal limit exceeded (₹" + DAILY_LIMIT + " per day)"
+            );
+        }
+
+        // ✅ Update account
         acc.setBalance(acc.getBalance() - amount);
+        acc.setDailyWithdrawn(acc.getDailyWithdrawn() + amount);
+
         accountRepo.save(acc);
 
         transactionRepo.save(
@@ -119,7 +148,7 @@ public class ATMService {
         accountRepo.save(acc);
     }
 
-    // ================= MINI STATEMENT =================
+    // ================= TRANSACTIONS =================
     public List<Transaction> getTransactions(String accNo) {
 
         Account acc = accountRepo.findByAccountNumber(accNo);

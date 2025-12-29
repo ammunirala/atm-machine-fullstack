@@ -27,7 +27,71 @@ public class ATMController {
         this.service = service;
     }
 
-    // ✅ CHANGE PIN
+    // ================= LOGIN =================
+    @PostMapping("/login")
+    public ApiResponse<AccountDTO> login(
+            @RequestParam String accNo,
+            @RequestParam int pin) {
+
+        Account acc = service.login(accNo, pin);
+
+        AccountDTO dto = new AccountDTO(
+                acc.getAccountNumber(),
+                acc.getBalance()
+        );
+
+        return new ApiResponse<>(
+                true,
+                "Login successful",
+                dto
+        );
+    }
+
+    // ================= BALANCE =================
+    @GetMapping("/balance/{accNo}")
+    public ApiResponse<Double> balance(
+            @PathVariable String accNo) {
+
+        double balance = service.balance(accNo);
+
+        return new ApiResponse<>(
+                true,
+                "Balance fetched",
+                balance
+        );
+    }
+
+    // ================= DEPOSIT =================
+    @PostMapping("/deposit")
+    public ApiResponse<String> deposit(
+            @RequestParam String accNo,
+            @RequestParam double amount) {
+
+        service.deposit(accNo, amount);
+
+        return new ApiResponse<>(
+                true,
+                "Deposit successful",
+                null
+        );
+    }
+
+    // ================= WITHDRAW =================
+    @PostMapping("/withdraw")
+    public ApiResponse<String> withdraw(
+            @RequestParam String accNo,
+            @RequestParam double amount) {
+
+        service.withdraw(accNo, amount);
+
+        return new ApiResponse<>(
+                true,
+                "Withdraw successful",
+                null
+        );
+    }
+
+    // ================= CHANGE PIN =================
     @PostMapping("/change-pin")
     public ApiResponse<String> changePin(
             @RequestParam String accNo,
@@ -35,57 +99,25 @@ public class ATMController {
             @RequestParam int newPin) {
 
         service.changePin(accNo, oldPin, newPin);
-        return new ApiResponse<>(true, "PIN changed successfully", null);
+
+        return new ApiResponse<>(
+                true,
+                "PIN changed successfully",
+                null
+        );
     }
 
-    // ✅ LOGIN
-    @PostMapping("/login")
-    public ApiResponse<AccountDTO> login(
-            @RequestParam String accNo,
-            @RequestParam int pin) {
-
-        Account acc = service.login(accNo, pin);
-        AccountDTO dto
-                = new AccountDTO(acc.getAccountNumber(), acc.getBalance());
-
-        return new ApiResponse<>(true, "Login successful", dto);
-    }
-
-    // ✅ BALANCE
-    @GetMapping("/balance/{accNo}")
-    public ApiResponse<Double> balance(@PathVariable String accNo) {
-        return new ApiResponse<>(true, "Balance fetched",
-                service.balance(accNo));
-    }
-
-    // ✅ DEPOSIT
-    @PostMapping("/deposit")
-    public ApiResponse<String> deposit(
-            @RequestParam String accNo,
-            @RequestParam double amount) {
-
-        service.deposit(accNo, amount);
-        return new ApiResponse<>(true, "Deposit successful", null);
-    }
-
-    // ✅ WITHDRAW
-    @PostMapping("/withdraw")
-    public ApiResponse<String> withdraw(
-            @RequestParam String accNo,
-            @RequestParam double amount) {
-
-        service.withdraw(accNo, amount);
-        return new ApiResponse<>(true, "Withdraw successful", null);
-    }
-
-    // ✅ TRANSACTIONS
+    // ================= TRANSACTION HISTORY =================
     @GetMapping("/transactions/{accNo}")
     public ApiResponse<List<Transaction>> transactions(
             @PathVariable String accNo) {
 
+        List<Transaction> list = service.getTransactions(accNo);
+
         return new ApiResponse<>(
                 true,
                 "Transaction history fetched",
-                service.getTransactions(accNo));
+                list
+        );
     }
 }

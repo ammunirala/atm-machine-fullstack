@@ -2,9 +2,14 @@ package com.atm.dto;
 
 public class AccountDTO {
 
-    private final String accountNumber;
-    private final double balance;
+    private String accountNumber;
+    private double balance;
 
+    // ✅ No-args constructor (IMPORTANT)
+    public AccountDTO() {
+    }
+
+    // ✅ All-args constructor (IMPORTANT)
     public AccountDTO(String accountNumber, double balance) {
         this.accountNumber = accountNumber;
         this.balance = balance;
@@ -14,7 +19,15 @@ public class AccountDTO {
         return accountNumber;
     }
 
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
     public double getBalance() {
         return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 }
