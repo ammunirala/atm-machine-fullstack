@@ -1,10 +1,25 @@
-# Backend
+# ======================
+# Backend (Spring Boot)
+# ======================
 /atm-machine/target/
 *.log
 
-# Frontend
+# ======================
+# Frontend (React)
+# ======================
 /atm-machine-frontend/node_modules/
+/atm-machine-frontend/build/
+/atm-machine-frontend/dist/
 .env
 
-# OS
+# ======================
+# IDE / Editor
+# ======================
+.vscode/
+.idea/
+
+# ======================
+# OS files
+# ======================
 .DS_Store
+Thumbs.db
