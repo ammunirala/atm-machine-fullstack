@@ -164,11 +164,6 @@ Amresh Kumar Nirala
 B.Tech CSE | Full Stack Developer
 Java • Spring Boot • React • MySQL
 
-🔗 LinkedIn: (add your LinkedIn profile link)
-🔗 GitHub: (this repository)
-
-
-⭐ If you like this project, give it a star
 
 
 
